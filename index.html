@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通信原理 第一章 绪论 —— 课堂笔记（信息及其度量 · 系统性能指标）</title>
+<meta name="description" content="通信原理第一章绪论课堂笔记：消息/信息/信号、通信系统模型、信息量、熵、码元速率与信息速率、频带利用率、误码率。基于两节课录音转文本整理，知识点经核验与扩充。">
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --ink:#20242f; --muted:#5c6474;
+    --brand:#14579e; --brand2:#0d7f88; --line:#e4e8f0;
+    --key:#fff6c9; --keybd:#e9c93f;
+    --warn:#ffe9e7; --warnbd:#f2806f;
+    --info:#e6f2fd; --infobd:#63a5e4;
+    --ok:#e7f7ec; --okbd:#58b978;
+    --formula:#f2f6ff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.75; font-size:16px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:14px 16px 60px}
+  .hero{
+    background:linear-gradient(135deg,#14579e 0%,#0d7f88 100%);
+    color:#fff; border-radius:14px; padding:22px 20px; margin:10px 0 18px;
+    box-shadow:0 6px 18px rgba(20,87,158,.25);
+  }
+  .hero h1{margin:0 0 6px;font-size:1.42rem;line-height:1.35}
+  .hero p{margin:3px 0;font-size:.92rem;opacity:.94}
+  .hero .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .hero .tags span{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    padding:2px 10px;border-radius:99px;font-size:.78rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px 16px 18px;margin:14px 0;box-shadow:0 1px 4px rgba(30,40,60,.05)}
+  h2{
+    font-size:1.22rem; margin:26px 0 10px; padding:6px 0 6px 12px;
+    border-left:5px solid var(--brand); border-radius:2px;
+    background:linear-gradient(90deg,#eef4fc,transparent);
+  }
+  h2 .no{
+    display:inline-block;background:var(--brand);color:#fff;font-size:.85rem;
+    border-radius:6px;padding:1px 8px;margin-right:8px;vertical-align:2px;
+  }
+  h3{font-size:1.05rem;margin:20px 0 8px;color:#0f3c6e;border-bottom:1px dashed #c9d6ea;padding-bottom:3px}
+  h4{font-size:.98rem;margin:14px 0 6px;color:#0f3c6e}
+  p{margin:8px 0}
+  ul,ol{margin:6px 0 10px;padding-left:24px}
+  li{margin:4px 0}
+  a{color:var(--brand)}
+  mark{background:var(--key);padding:0 3px;border-radius:3px;color:inherit}
+  .keyword{background:var(--key);padding:0 4px;border-radius:4px;font-weight:600}
+  .fd{background:var(--formula);border:1px solid #dbe4fa;border-radius:8px;
+    padding:10px 14px;margin:10px 0;text-align:center;overflow-x:auto;
+    font-family:Georgia,"Times New Roman","STIX Two Math",serif;font-size:1.06rem}
+  .fd .var{font-style:italic}
+  .box{border-radius:10px;padding:12px 14px;margin:12px 0;font-size:.96rem}
+  .box .bt{font-weight:700;display:block;margin-bottom:4px}
+  .keybox{background:var(--key);border:1px solid var(--keybd)}
+  .warn{background:var(--warn);border:1px solid var(--warnbd)}
+  .info{background:var(--info);border:1px solid var(--infobd)}
+  .ok{background:var(--ok);border:1px solid var(--okbd)}
+  .ex{background:#fbf8f1;border:1px solid #e8dcc3;border-radius:10px;padding:12px 14px;margin:12px 0}
+  .ex .bt{font-weight:700;color:#7a5b12;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;margin:10px 0}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#eef3fb;color:#0f3c6e}
+  tr:nth-child(even) td{background:#fafbfe}
+  .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:14px 0}
+  .toc summary{cursor:pointer;font-weight:700;color:var(--brand);font-size:1rem}
+  .toc ol{margin:8px 0 0;padding-left:22px}
+  .toc a{text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .flow{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;
+    font-size:.92rem;text-align:center;line-height:2}
+  .flow .node{display:inline-block;background:#eef4fc;border:1px solid #b9cdea;border-radius:8px;
+    padding:3px 10px;margin:3px 2px}
+  .flow .arrow{color:#7f8aa0;margin:0 3px}
+  .flow .noise{display:inline-block;background:#fdeeee;border:1px dashed #f2a1a1;border-radius:8px;
+    padding:2px 8px;margin:3px 2px;font-size:.82rem}
+  .mm{font-size:.94rem}
+  .mm ul{margin:2px 0 6px}
+  .foot{color:var(--muted);font-size:.85rem;margin-top:26px;border-top:1px solid var(--line);padding-top:12px}
+  code{word-break:break-all;overflow-wrap:anywhere}
+  .totop{position:fixed;right:14px;bottom:14px;background:var(--brand);color:#fff;border-radius:99px;
+    padding:8px 14px;text-decoration:none;font-size:.85rem;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+  @media (max-width:560px){
+    body{font-size:15px;line-height:1.7}
+    .hero h1{font-size:1.22rem}
+    h2{font-size:1.12rem}
+  }
+  @media print{
+    .totop,.toc{display:none}
+    body{background:#fff}
+    .card{border:none;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>📡 通信原理 · 第一章 绪论 课堂笔记</h1>
+    <p>内容覆盖：消息/信息/信号 · 通信系统模型 · 信息及其度量（信息量、熵）· 系统主要性能指标（波特率、比特率、频带利用率、误码率）</p>
+    <p style="opacity:.85">来源：<b>《标准录音12》</b> + <b>《指定方向录音2》</b> 两节课录音转文本（1.4 节与 1.5 节为主体）</p>
+    <div class="tags">
+      <span>🔍 知识点已核验</span><span>📈 含扩充内容</span><span>📱 手机友好</span><span>✏️ 例题精讲</span>
+    </div>
+  </div>
+
+  <div class="toc">
+    <details open>
+      <summary>📑 目录（点击展开/收起）</summary>
+      <ol>
+        <li><a href="#s0">使用说明与核验说明</a></li>
+        <li><a href="#s1">课堂回顾：消息·信息·信号与通信系统模型</a></li>
+        <li><a href="#s2">1.4 信息及其度量（本课重点）</a></li>
+        <li><a href="#s3">1.5 通信系统主要性能指标（本课重点）</a></li>
+        <li><a href="#s4">课堂练习精讲（3 题全解）</a></li>
+        <li><a href="#s5">易错点与考试提示</a></li>
+        <li><a href="#s6">第一章思维导图</a></li>
+        <li><a href="#s7">参考资料</a></li>
+      </ol>
+    </details>
+  </div>
+
+  <!-- ======================== 0 ======================== -->
+  <div class="card" id="s0">
+    <h2><span class="no">0</span>使用说明与核验说明</h2>
+    <div class="info">
+      <span class="bt">📌 这份笔记是怎么来的？</span>
+      基于两节课的 <b>录音转文本（ASR 自动语音识别）</b> 整理而成。识别文本中普遍存在同音字、公式口述歧义（如“R 大 B / R 小 B”实际指码元速率与信息速率），因此本笔记做了三件事：
+    </div>
+    <ul>
+      <li><b>核验</b>：所有核心概念、公式、例题答案均按主流教材（樊昌信、曹丽娜《通信原理》第 7 版第 1 章体系）重新核对，并动手重算了全部数值题；</li>
+      <li><b>修正</b>：对转写错误做了纠正，例如“波特/比特”“奈特/哈特”“误码率/误信率”等易混术语已在正文中给出准确表述；</li>
+      <li><b>扩充</b>：对老师点到为止的内容（如压缩与信息量的关系、熵的性质、通信方式分类、误码率指标要求等）做了更细化的补充，并与后续章节（调制、信道容量）衔接。</li>
+    </ul>
+    <div class="warn">
+      <span class="bt">⚠️ 免责声明</span>
+      录音转写难免有听写误差，个别题目原参数若与课堂板书不一致，请以教材和老师板书为准；本笔记给出的是经核验的规范表述。
+    </div>
+  </div>
+
+  <!-- ======================== 1 ======================== -->
+  <div class="card" id="s1">
+    <h2><span class="no">1</span>课堂回顾：消息·信息·信号 与 通信系统模型</h2>
+
+    <h3>1.1 三个基本概念（老师说“必记”）</h3>
+    <ul>
+      <li><mark><b>消息 (Message)</b></mark>：通信中要传递的原始对象，可以是文字、语音、图像、数据等；分为<b>连续消息</b>（取值连续，如语音）和<b>离散消息</b>（取值有限/可数，如电报符号、数字）。</li>
+      <li><mark><b>信息 (Information)</b></mark>：消息的内涵——对接收者而言<b>不确定性的消除</b>。同一句话对不同人“信息量”可能不同，这正是 1.4 节要解决的问题。</li>
+      <li><mark><b>信号 (Signal)</b></mark>：消息的载体，是消息的物理表现形式，可以是电信号、光信号等。</li>
+    </ul>
+    <div class="keybox box">
+      <span class="bt">🔑 三者关系（考试高频填空/简答）</span>
+      信息的表现形式是<b>消息</b>；消息的内涵是<b>信息</b>；<b>信号</b>是消息的载体。
+    </div>
+    <p><b>通信</b>：利用电信号（或光信号）等载体，把消息中的有效内容（即信息）从发送端安全、有效地传送到接收端的过程。</p>
+    <p><b>通信系统</b>：完成通信过程所需的<b>全部电子设备 + 信道</b>的总和（发送端设备 + 接收端设备 + 中间传输介质）。</p>
+
+    <h3>1.2 通信系统的组成（老师说“期末常考画图题和简答题”）</h3>
+    <div class="flow">
+      <span class="node">信源</span><span class="arrow">→</span>
+      <span class="node">发送设备</span><span class="arrow">→</span>
+      <span class="node">信道</span><span class="arrow">→</span>
+      <span class="node">接收设备</span><span class="arrow">→</span>
+      <span class="node">信宿</span>
+      <br><span class="noise">噪声源（加性噪声，通常为高斯白噪声 AWGN）叠加在信道上</span>
+    </div>
+    <ul>
+      <li><b>信源</b>：产生消息及其原始电信号；<b>信宿</b>：接收并还原消息；</li>
+      <li><b>发送设备</b>：把原始信号变换成适合在信道中传输的形式（编码、调制、放大等）；</li>
+      <li><b>信道</b>：传输信号的物理媒介，分<b>有线信道</b>（同轴电缆、光纤等）和<b>无线信道</b>（自由空间）；</li>
+      <li><b>接收设备</b>：发送设备的逆变换（放大、解调、译码等）；</li>
+      <li><b>噪声源</b>：信道中必然存在，建模为<b>加性噪声</b>，通信原理中通常假设为<b>高斯白噪声（AWGN）</b>。</li>
+    </ul>
+
+    <h3>1.3 模拟系统与数字系统的框图差异</h3>
+    <div class="tblwrap">
+    <table>
+      <tr><th>系统类型</th><th>发送设备主要环节</th><th>接收设备主要环节</th></tr>
+      <tr>
+        <td><b>模拟通信系统</b><br>（传输模拟信号）</td>
+        <td>调制器（+ 放大器）</td>
+        <td>解调器</td>
+      </tr>
+      <tr>
+        <td><b>数字通信系统</b><br>（传输数字信号）</td>
+        <td><b>信源编码 → 加密 → 信道编码 → 调制</b></td>
+        <td><b>解调 → 信道译码 → 解密 → 信源译码</b></td>
+      </tr>
+    </table>
+    </div>
+    <div class="info">
+      <span class="bt">💡 扩充：各环节在干什么？</span>
+      <b>信源编码</b>：去除冗余（压缩），把模拟/信源符号变成二进制数字流；<b>加密</b>：保证信息安全；<b>信道编码</b>：加入可控冗余（纠错码，如汉明码、RS 码），提高抗干扰能力；<b>调制</b>：把数字比特流搬移到适合信道的频段（如 PSK/QAM）。接收端各环节为对应逆过程。
+    </div>
+
+    <h3>1.4 课堂引言与通信方式分类</h3>
+    <div class="ok box">
+      <span class="bt">🌐 老师课上引入的通信场景</span>
+      ① 神舟载人飞船与地面的“天地通信”；② 日常生活离不开的手机/网络；③ 矿井（煤矿井下）5G 基站 + WiFi 6 专网，支撑无人化开采与视频监控；④ 好莱坞影星 <b>海蒂·拉玛（Hedy Lamarr，1914 年生于奥地利维也纳）</b>——演员兼发明家，与作曲家乔治·安塞尔合作提出<b>跳频扩频</b>思想，是 CDMA、WiFi、蓝牙等技术的重要先驱，被称为“WiFi 之母”。老师以她与同期影星（如奥黛丽·赫本）对比，引出通信技术背后的工程智慧。此外还预告了 AM/FM（模拟调制）与 OFDM（正交频分复用）等后续章节概念。
+    </div>
+    <p><mark>通信方式分类（按消息传递方向）</mark>——本节课堂复习重点：</p>
+    <div class="tblwrap">
+    <table>
+      <tr><th>方式</th><th>定义</th><th>典型例子</th></tr>
+      <tr><td><b>单工</b></td><td>消息只能单方向传输</td><td>广播、电视、遥控器</td></tr>
+      <tr><td><b>半双工</b></td><td>双方都能收发，但同一时刻只能一方发</td><td>对讲机</td></tr>
+      <tr><td><b>全双工</b></td><td>双方同时收发</td><td>固定电话、手机通话</td></tr>
+    </table>
+    </div>
+    <div class="info">
+      <span class="bt">💡 扩充：通信方式还有哪些分类维度？</span>
+      ① <b>按数字信号排列顺序</b>：并行传输（多位同时传，速度快、线多，如计算机内部总线）/ 串行传输（一位一位传，线路少，如 USB、RS-232）；② <b>按同步方式</b>：同步通信（收发有统一时钟节拍）/ 异步通信（逐字符起止同步，如 UART，波特率 9600、115200 等）；③ <b>按复用方式</b>：频分 FDM、时分 TDM、码分 CDM、波分 WDM（光纤）。课堂上主要强调了“按方向”这一维。
+    </div>
+  </div>
+
+  <!-- ======================== 2 ======================== -->
+  <div class="card" id="s2">
+    <h2><span class="no">2</span>1.4 信息及其度量（本课重点）</h2>
+
+    <h3>2.1 为什么要度量信息？</h3>
+    <p>通信系统传输的对象是“消息”，而真正有价值的是消息中包含的“信息”。<mark>度量信息的目的：定量衡量消息中携带信息的大小，从而衡量通信系统的传输能力。</mark></p>
+
+    <h3>2.2 课堂直观例子：信息量 = 概率的函数</h3>
+    <ul>
+      <li><b>停课调查</b>：老师问卷“明天太阳照常升起”vs“明天停课一天”，绝大多数同学觉得“停课”信息量大——因为 <mark>事件发生概率越小，不确定性越大，信息量越大</mark>；“太阳从东方升起”概率≈1，几乎不含新信息（信息量≈0）。</li>
+      <li><b>文本压缩（zip）</b>：内容全是重复字符的文本，压缩后体积大幅缩小；随机性大（每个字符都“意外”）的文本几乎压不动。因为压缩算法（类霍夫曼编码）给<b>高概率（信息量小）的符号分配短码</b>，给低概率（信息量大）的符号分配长码。</li>
+      <li><b>摩斯电码</b>：字母 E 只用一个点“·”（最短码），因为它在英文中出现概率最高、信息量最小；Q、Z 等罕见字母的码更长。这正是“概率大→信息量小→码长短”的直观体现。</li>
+    </ul>
+
+    <h3>2.3 信息度量的两个原则（书上要点）</h3>
+    <ol>
+      <li>度量方法与消息的<b>种类无关</b>（文字、语音、图像都可用同一套数学方法度量）；</li>
+      <li>度量方法与消息的<b>重要程度无关</b>。</li>
+    </ol>
+    <p>信息量只与<b>事件发生的概率（不确定性）</b>一一对应：概率 → 0 时信息量 → ∞；概率 → 1 时信息量 → 0。</p>
+
+    <h3>2.4 自信息量（单符号信息量）公式【必记公式 ①】</h3>
+    <div class="fd">
+      I(x) = log<sub>a</sub> [1 / P(x)] = − log<sub>a</sub> P(x)
+    </div>
+    <ul>
+      <li><i>P(x)</i> 为符号 <i>x</i> 出现的概率；</li>
+      <li>对数底 <i>a</i> 决定单位：</li>
+    </ul>
+    <div class="tblwrap">
+    <table>
+      <tr><th>底数 a</th><th>单位</th><th>说明</th></tr>
+      <tr><td>a = 2</td><td><b>比特（bit）</b></td><td>最常用；对应二进制 0/1 的一次等概率选择</td></tr>
+      <tr><td>a = e</td><td><b>奈特（nat）</b></td><td>1 nat ≈ 1.44 bit</td></tr>
+      <tr><td>a = 10</td><td><b>哈特（Hartley）</b></td><td>1 Hartley ≈ 3.32 bit</td></tr>
+    </table>
+    </div>
+    <div class="info">
+      <span class="bt">💡 扩充：信息量的可加性</span>
+      对两个<b>相互独立</b>的事件 x、y，其联合事件所含的信息量等于各自信息量之和：<b>I(xy) = I(x) + I(y)</b>。这正是定义取对数形式的原因——它把“概率相乘”转化为“信息量相加”，使度量更方便。对熵同样成立（独立信源的联合熵 = 各熵之和）。
+    </div>
+
+    <div class="warn box">
+      <span class="bt">❗ 老师特别强调</span>
+      做填空题/计算题时，<b>算完信息量必须写单位“比特(bit)”</b>，漏写单位要扣分！工程表述要严谨。
+    </div>
+
+    <h3>2.5 例题 1-1：二进制离散信源（书上例 1-1）</h3>
+    <div class="ex">
+      <span class="bt">✏️ 题目</span>
+      设一<b>二进制离散信源</b>，以相等的概率发送数字 0 或 1（即 P(0)=P(1)=1/2）。求信源每个符号输出的信息量。
+    </div>
+    <p>解：I(0) = I(1) = −log<sub>2</sub>(1/2) = log<sub>2</sub> 2 = <b>1 bit</b>。</p>
+    <p>含义：等概率发送 0/1 时，每个二进制码元恰含 1 比特信息，所以习惯上把<b>一个二进制码元称为“1 比特”</b>。</p>
+
+    <h3>2.6 推广：M 进制等概率信源</h3>
+    <p>若 M 进制信源各符号<b>等概率</b>（P = 1/M），则每个符号的信息量为：</p>
+    <div class="fd">
+      I = log<sub>2</sub> M &nbsp;（bit/符号）
+    </div>
+    <div class="tblwrap">
+    <table>
+      <tr><th>进制 M</th><th>概率</th><th>信息量</th><th>二进制位数 K</th></tr>
+      <tr><td>二进制 (M=2)</td><td>1/2</td><td>log<sub>2</sub>2 = 1 bit</td><td>1 位（0、1）</td></tr>
+      <tr><td>四进制 (M=4)</td><td>1/4</td><td>log<sub>2</sub>4 = 2 bit</td><td>2 位（00、01、10、11）</td></tr>
+      <tr><td>八进制 (M=8)</td><td>1/8</td><td>log<sub>2</sub>8 = 3 bit</td><td>3 位</td></tr>
+      <tr><td>M 进制 (M=2<sup>K</sup>)</td><td>1/M</td><td>log<sub>2</sub> M = K bit</td><td>K 位</td></tr>
+    </table>
+    </div>
+    <p>本质：1 个 M 进制符号可以用 K 位二进制表示，故携带 K 比特信息——这也是计算机内部一切信息都用比特表示的原因。</p>
+
+    <h3>2.7 平均信息量（信源熵）H(X)【必记公式 ②——本课最重要公式】</h3>
+    <p>实际信源各符号往往<b>非等概率</b>。对长度为 N 的符号序列，每个符号的“平均”信息量要用统计平均（数学期望）：</p>
+    <div class="fd">
+      H(X) = − ∑<sub>i=1</sub><sup>M</sup> P(x<sub>i</sub>) · log<sub>2</sub> P(x<sub>i</sub>) &nbsp;&nbsp;(bit/符号)
+    </div>
+    <ul>
+      <li>H(X) 称为<b>信源熵</b>（Entropy，香农 1948 年提出），是信源每个符号携带的<b>平均信息量</b>；</li>
+      <li>要求：P(x<sub>i</sub>) ≥ 0 且 ∑ P(x<sub>i</sub>) = 1；各符号相互独立；</li>
+      <li>等概率时 H(X) = log<sub>2</sub> M，达到<b>最大值</b>（最大熵原理）；</li>
+      <li>公式也写作 H(X) = ∑ P(x<sub>i</sub>) · I(x<sub>i</sub>)，即“概率 × 自信息量”的加权和。</li>
+    </ul>
+
+    <h3>2.8 例题 1-4：非等概率信源与一段消息的信息量（课上完整求解）</h3>
+    <div class="ex">
+      <span class="bt">✏️ 题目（教材例 1-4）</span>
+      离散信源由 0、1、2、3 四个符号组成，出现概率分别为 P(0)=3/8、P(1)=1/4、P(2)=1/4、P(3)=1/8（总和=1，各符号独立）。一段消息为
+      <br><code>201020130213001203210100321010023102002010312032100120210</code>
+      <br>求该消息的总信息量（两种方法）。
+    </div>
+    <p><b>第一步：求每个符号的自信息量</b></p>
+    <div class="fd">
+      I(0) = −log<sub>2</sub>(3/8) = log<sub>2</sub>(8/3) ≈ 1.415 bit<br>
+      I(1) = −log<sub>2</sub>(1/4) = 2 bit<br>
+      I(2) = −log<sub>2</sub>(1/4) = 2 bit<br>
+      I(3) = −log<sub>2</sub>(1/8) = 3 bit
+    </div>
+    <p><b>第二步：数消息中每个符号的个数</b>（共 57 个符号：0 出现 23 次、1 出现 14 次、2 出现 13 次、3 出现 7 次）</p>
+    <p><b>方法一：算术统计法</b>（逐个符号统计加总）</p>
+    <div class="fd">
+      I<sub>总</sub> = 23×1.415 + 14×2 + 13×2 + 7×3 = 107.55 ≈ <b>108 bit</b>
+    </div>
+    <p><b>方法二：熵法</b>（先求平均信息量，再乘以符号总数）</p>
+    <div class="fd">
+      H = −[ (3/8)log<sub>2</sub>(3/8) + (1/4)log<sub>2</sub>(1/4) + (1/4)log<sub>2</sub>(1/4) + (1/8)log<sub>2</sub>(1/8) ] ≈ 1.906 bit/符号
+      <br>I<sub>总</sub> = N × H = 57 × 1.906 ≈ <b>108.64 bit</b>
+    </div>
+    <div class="keybox box">
+      <span class="bt">🔑 两种方法为什么结果略有差别？</span>
+      方法一是“实际发生的信息量”（按消息中真实计数统计）；方法二是“统计平均意义下的信息量”（按概率期望 × 长度）。<b>消息越长，两种结果越接近</b>（大数定律）。短消息适合用方法一，长消息用方法二更简便。考试两种方法都要会。
+    </div>
+
+    <h3>2.9 连续消息的信息量（了解即可）</h3>
+    <p>对取值范围连续的连续信源，概率用<b>概率密度函数 f(x)</b> 描述（f(x)·dx 是落在小区间内的概率），其平均信息量（称为<b>连续信源熵/微分熵，也叫相对熵</b>）为：</p>
+    <div class="fd">
+      h(X) = − ∫<sub>−∞</sub><sup>+∞</sup> f(x) · log<sub>2</sub> f(x) dx
+    </div>
+    <div class="info">
+      <span class="bt">💡 扩充</span>
+      课堂老师说“连续消息不作为考试重点，但要会算”。这里只要求：知道连续信源用概率密度函数、用积分代替求和即可。典型结论：<b>高斯分布</b>（方差 σ²）的连续熵为 (1/2)log<sub>2</sub>(2πeσ²)，在给定方差下高斯分布熵最大。
+    </div>
+
+    <h3>2.10 知识扩充：熵的性质与压缩的关系</h3>
+    <ul>
+      <li><b>非负性</b>：H(X) ≥ 0，等号仅在某个符号概率为 1（其余为 0）时成立——此时信源完全确定，不含信息；</li>
+      <li><b>最大熵</b>：等概率时熵最大，H_max = log<sub>2</sub> M；越“平均”的信源，平均信息量越大；</li>
+      <li><b>二进制熵函数</b>：只有 0/1 两符号（概率 p 与 1−p）时，H = −p·log<sub>2</sub>p − (1−p)·log<sub>2</sub>(1−p)，在 p=0.5 时取最大值 1 bit；p=0 或 1 时 H=0；</li>
+      <li><b>与压缩编码的联系</b>（老师用 zip 举例的深意）：香农第一定理（无失真信源编码定理）指出——<mark>无损压缩的极限就是信源熵</mark>；霍夫曼（Huffman）编码按“概率大→码长短”构造，平均码长 ≥ 熵，且可任意逼近。</li>
+    </ul>
+  </div>
+
+  <!-- ======================== 3 ======================== -->
+  <div class="card" id="s3">
+    <h2><span class="no">3</span>1.5 通信系统主要性能指标（本课重点）</h2>
+
+    <h3>3.1 两大指标总览：有效性 与 可靠性</h3>
+    <ul>
+      <li><b>有效性（Effectiveness）</b>：在给定信道条件下，系统传输信息的<b>速度/效率</b>——“传得快、省频带”；</li>
+      <li><b>可靠性（Reliability）</b>：系统<b>正确传输</b>信息的能力——抗噪声、抗干扰，“传得准”；</li>
+    </ul>
+    <div class="keybox box">
+      <span class="bt">🔑 有效性与可靠性是一对矛盾（老师说“可互换”）</span>
+      提高有效性往往降低可靠性，反之亦然。例如加密/纠错编码会牺牲一部分有效性（多传冗余比特）来换取可靠性；工程上需要在两者之间折中平衡。
+    </div>
+    <div class="tblwrap">
+    <table>
+      <tr><th>系统类型</th><th>有效性指标</th><th>可靠性指标</th></tr>
+      <tr><td><b>模拟通信系统</b></td><td>传输带宽 B（Hz）——带宽越窄越有效</td><td>输出信噪比 SNR = S/N（信号功率/噪声功率）——越大越可靠</td></tr>
+      <tr><td><b>数字通信系统</b></td><td><b>频带利用率 η</b>（Baud/Hz 或 bit/s/Hz）</td><td><b>差错概率 P<sub>e</sub></b>（误码率），还有误信率 P<sub>b</sub></td></tr>
+    </table>
+    </div>
+    <div class="info">
+      <span class="bt">💡 扩充：模拟系统“带宽换信噪比”</span>
+      调频（FM）广播比调幅（AM）广播占用更宽频带，但抗干扰能力（输出信噪比）显著更好——这就是典型的“用有效性换可靠性”。
+    </div>
+
+    <h3>3.2 码元传输速率 R<sub>B</sub>（传码率 / 波特率）</h3>
+    <ul>
+      <li>定义：<mark>每秒传输的码元（符号）个数</mark>；</li>
+      <li>单位：<b>波特（Baud）</b>；</li>
+      <li>公式（T<sub>s</sub> 为一个码元持续时间）：</li>
+    </ul>
+    <div class="fd">
+      R<sub>B</sub> = 1 / T<sub>s</sub> &nbsp;&nbsp;(Baud)
+    </div>
+    <ul>
+      <li>例：1 秒内传 1000 个码元 → R<sub>B</sub> = 1000 波特；硬件串口常见的 9600、115200 这类“波特率”设置，在二进制电平信号下数值上正好等于 bit/s（见 3.3），所以工程上常把二者混称；</li>
+      <li><mark>R<sub>B</sub> 与进制数（M）无关、与信源统计特性无关</mark>——它只管“每秒甩出多少个码元”。</li>
+    </ul>
+
+    <h3>3.3 信息传输速率 R<sub>b</sub>（传信率 / 比特率）</h3>
+    <ul>
+      <li>定义：<mark>每秒传输的信息量</mark>；</li>
+      <li>单位：<b>比特/秒（bit/s，简写 b/s 或 bps）</b>；</li>
+      <li>与 R<sub>B</sub> 的关系——通过信源熵 H 联系起来：</li>
+    </ul>
+    <div class="fd">
+      R<sub>b</sub> = R<sub>B</sub> · H(X)
+    </div>
+    <ul>
+      <li><b>等概率</b>时（H = log<sub>2</sub> M，M=2<sup>K</sup>）：</li>
+    </ul>
+    <div class="fd">
+      R<sub>b</sub> = R<sub>B</sub> · log<sub>2</sub> M
+    </div>
+    <ul>
+      <li>特别地，<mark>二进制（M=2）等概率时，R<sub>b</sub> 与 R<sub>B</sub> 数值相等</mark>，但单位不同（bit/s vs Baud），做题必须区分：<b>大 B = 波特率，小 b = 比特率</b>。</li>
+    </ul>
+    <div class="tblwrap">
+    <table>
+      <tr><th></th><th>码元传输速率 R<sub>B</sub></th><th>信息传输速率 R<sub>b</sub></th></tr>
+      <tr><td>别名</td><td>传码率 / 波特率</td><td>传信率 / 比特率</td></tr>
+      <tr><td>定义</td><td>每秒传输的码元个数</td><td>每秒传输的信息量</td></tr>
+      <tr><td>单位</td><td>波特（Baud）</td><td>比特/秒（bit/s、bps）</td></tr>
+      <tr><td>决定因素</td><td>只与码元宽度 T<sub>s</sub> 有关</td><td>与 R<sub>B</sub> 和每符号平均信息量 H 有关</td></tr>
+      <tr><td>关系</td><td colspan="2">R<sub>b</sub> = R<sub>B</sub>·H；等概率时 R<sub>b</sub> = R<sub>B</sub>·log<sub>2</sub>M</td></tr>
+    </table>
+    </div>
+
+    <h3>3.4 频带利用率 η（数字系统有效性指标）</h3>
+    <p>单位频带（1 Hz）内能传输的速率，有两种写法：</p>
+    <div class="fd">
+      η = R<sub>B</sub> / B &nbsp;&nbsp;(Baud/Hz)&nbsp;&nbsp;&nbsp;或&nbsp;&nbsp;&nbsp; η<sub>b</sub> = R<sub>b</sub> / B &nbsp;&nbsp;(bit/s/Hz)
+    </div>
+    <ul>
+      <li>B 为系统传输带宽（Hz）；</li>
+      <li>两种写法单位不同；二进制等概率时两者数值相同；</li>
+      <li>η 越大，说明用同样带宽能传更多信息，系统越“有效”。</li>
+    </ul>
+
+    <div class="info">
+      <span class="bt">💡 扩充：频带利用率的理论上限（提前了解，与后续章节衔接）</span>
+      奈奎斯特准则：理想无噪声低通信道下，码元速率上限为 <b>R<sub>B(max)</sub> = 2B</b>（B 为带宽），所以二进制时频带利用率上限为 <b>2 bit/(s·Hz)</b>；香农公式 C = B·log<sub>2</sub>(1 + S/N) 则给出了有噪信道下信息速率（比特率）的绝对上限——频带利用率不可能无限提高，这正是“有效性与可靠性相互制约”的深层原因。实际系统的 η 都在这些理论上限之下。
+    </div>
+
+    <h3>3.5 可靠性指标：误码率 P<sub>e</sub> 与误信率 P<sub>b</sub></h3>
+    <div class="fd">
+      P<sub>e</sub>（误码率）= 错误接收的码元数 / 传输的总码元数 &nbsp;&nbsp;（无单位）
+    </div>
+    <div class="fd">
+      P<sub>b</sub>（误信率）= 错误接收的信息量（比特数）/ 传输的总信息量（比特数）
+    </div>
+    <ul>
+      <li>二者都<b>没有单位</b>（比值）；</li>
+      <li>若每个错误码元中只错 1 个比特，四进制（每码元 2 bit）时：<b>P<sub>b</sub> = P<sub>e</sub> / log<sub>2</sub> M</b>，即 P<sub>b</sub> = P<sub>e</sub> / 2；</li>
+      <li><mark>课堂标准：正常通信要求误码率 P<sub>e</sub> &lt; 10<sup>−4</sup></mark>；</li>
+    </ul>
+    <div class="info">
+      <span class="bt">💡 扩充：不同业务的误码率要求</span>
+      语音 10<sup>−3</sup>～10<sup>−6</sup>（人耳可容忍少量差错），数据/计算机通信一般要求 10<sup>−6</sup> 以下，重要数据可要求 10<sup>−9</sup>～10<sup>−12</sup>。误码率由信道质量、调制/编码方式、信噪比共同决定。
+    </div>
+  </div>
+
+  <!-- ======================== 4 ======================== -->
+  <div class="card" id="s4">
+    <h2><span class="no">4</span>课堂练习精讲（3 题全解，含完整步骤）</h2>
+
+    <h3>练习 1：比较两个数字系统的有效性</h3>
+    <div class="ex">
+      <span class="bt">✏️ 题目</span>
+      系统 A 用 2PSK 调制，信息传输速率 R<sub>b</sub> = 2400 bit/s，所需带宽 B = 2400 Hz；系统 B 用 4PSK 调制，R<sub>b</sub> = 2400 bit/s，所需带宽 B = 1200 Hz。问哪个系统更有效？（PSK：相移键控，属数字调制，第 7 章讲授）
+    </div>
+    <p>解：比较数字系统有效性，看<b>频带利用率 η<sub>b</sub> = R<sub>b</sub>/B</b>：</p>
+    <div class="fd">
+      η<sub>A</sub> = 2400 / 2400 = 1 bit/s/Hz &nbsp;；&nbsp; η<sub>B</sub> = 2400 / 1200 = <b>2 bit/s/Hz</b>
+    </div>
+    <p>结论：<b>系统 B 更有效</b>——它用一半的带宽传同样多的信息。老师在课上指出：比较结果与“几进制调制”本身没有直接关系，关键看 R<sub>b</sub> 与带宽 B 的比值（就本题条件而言，4PSK 因谱效率高而胜出）。这类题常以填空题出现。</p>
+
+    <h3>练习 2：波特率 → 比特率 换算</h3>
+    <div class="ex">
+      <span class="bt">✏️ 题目</span>
+      某数字传输系统以 1200 波特（Baud）的速率传送<b>二进制</b>码元（等概率）。① 求信息速率 R<sub>b</sub>；② 若改为<b>八进制</b>、速率不变，求 R<sub>b</sub>。
+    </div>
+    <p>解（等概率，R<sub>b</sub> = R<sub>B</sub>·log<sub>2</sub>M）：</p>
+    <div class="fd">
+      ① 二进制：R<sub>b</sub> = 1200 × log<sub>2</sub>2 = <b>1200 bit/s</b><br>
+      ② 八进制：R<sub>b</sub> = 1200 × log<sub>2</sub>8 = 1200 × 3 = <b>3600 bit/s</b>
+    </div>
+    <p>注意：同样 1200 波特，八进制每个码元携带 3 比特，所以比特率是二进制的 3 倍。</p>
+
+    <h3>练习 3：由码元持续时间求速率 + 误码率与误信率</h3>
+    <div class="ex">
+      <span class="bt">✏️ 题目</span>
+      某<b>四进制</b>数字传输系统，已知码元持续时间（宽度）为 T<sub>s</sub>，则码元速率为 R<sub>B</sub> = 1/T<sub>s</sub> = 1200 波特（课堂条件）。该系统连续工作 1 小时，接收端共收到 <b>6 个错码</b>，且每个错码中仅发生 <b>1 个比特错误</b>。求系统的误码率 P<sub>e</sub> 与误信率 P<sub>b</sub>。
+    </div>
+    <p>解：</p>
+    <ul>
+      <li>1 小时内的总码元数：N = R<sub>B</sub> × t = 1200 × 3600 = <b>4.32×10<sup>6</sup> 个码元</b>；</li>
+      <li>总比特数：N × log<sub>2</sub>4 = 4.32×10<sup>6</sup> × 2 = <b>8.64×10<sup>6</sup> bit</b>；</li>
+    </ul>
+    <div class="fd">
+      P<sub>e</sub> = 6 / (4.32×10<sup>6</sup>) ≈ <b>1.39×10<sup>−6</sup></b>（误码率）<br>
+      P<sub>b</sub> = 6 / (8.64×10<sup>6</sup>) ≈ <b>6.94×10<sup>−7</sup></b>（误信率）
+    </div>
+    <p>关联验证：每个错码只错 1 bit，四进制每码元 2 bit，故 P<sub>b</sub> = P<sub>e</sub> / log<sub>2</sub>4 = 1.39×10<sup>−6</sup>/2 = 6.94×10<sup>−7</sup> ✔</p>
+    <div class="ok box">
+      <span class="bt">✅ 解题套路小结（老师提示）</span>
+      ① 给出 T<sub>s</sub> → 先求 R<sub>B</sub> = 1/T<sub>s</sub>；② 用 R<sub>b</sub> = R<sub>B</sub>·log<sub>2</sub>M 求比特率；③ 误码率/误信率 = 错的数量 ÷ 总的数量（注意码元与比特要分别计数）；④ 写结果保留有效数字并注明是什么率。
+    </div>
+  </div>
+
+  <!-- ======================== 5 ======================== -->
+  <div class="card" id="s5">
+    <h2><span class="no">5</span>易错点与考试提示（老师原话提炼）</h2>
+    <div class="warn box">
+      <span class="bt">🚨 高频失分点</span>
+      ① <b>漏写单位</b>：信息量必须写“bit”，波特率写“Baud”，比特率写“bit/s”，否则扣分；<br>
+      ② <b>混淆 R<sub>B</sub> 与 R<sub>b</sub></b>：大 B 是波特率（码元/秒），小 b 是比特率（bit/s），二进制等概率时数值相等但单位不同；<br>
+      ③ <b>混淆进制与每符号比特数</b>：四进制每符号 2 bit、八进制 3 bit，换算用 log<sub>2</sub>M；<br>
+      ④ <b>误码率忘记“无单位”</b>：P<sub>e</sub>、P<sub>b</sub> 都是比值，没有单位；<br>
+      ⑤ <b>画图题丢环节</b>：数字通信系统模型必画全“信源→信源编码→加密→信道编码→调制→信道→解调→信道译码→解密→信源译码→信宿”，且噪声源叠加在信道。
+    </div>
+    <ul>
+      <li><b>画图题/简答题</b>：通信系统一般模型、数字通信系统模型是期末高频题，每个环节的<b>作用要会描述</b>；</li>
+      <li><b>信息量计算三步走</b>：写概率 → 代入公式 I = −log<sub>2</sub>P → 加单位“bit”；</li>
+      <li><b>熵公式必须能默写</b>：H(X) = −∑ P(x<sub>i</sub>)log<sub>2</sub>P(x<sub>i</sub>)，两个必记公式（自信息量 + 熵）老师课上反复强调；</li>
+      <li><b>有效性比较题</b>：看到“哪个系统更有效”立即想 η = R<sub>b</sub>/B 或 R<sub>B</sub>/B；</li>
+      <li><b>学习态度提醒（老师原话）</b>：测试题要自己动脑做，不要直接丢给 AI 工具生成答案，否则失去总结课堂内容的作用。</li>
+    </ul>
+  </div>
+
+  <!-- ======================== 6 ======================== -->
+  <div class="card" id="s6">
+    <h2><span class="no">6</span>第一章思维导图</h2>
+    <div class="mm">
+      <ul>
+        <li><b>第一章 绪论</b>
+          <ul>
+            <li><b>1.1 基本概念</b>：消息（信息的表现形式）／信息（消息的内涵）／信号（消息的载体）；通信 = 用信号载体传输消息中的信息；通信系统 = 电子设备 + 信道</li>
+            <li><b>1.2 通信系统组成</b>：一般模型（信源→发送设备→信道→接收设备→信宿，+AWGN 噪声源）；模拟系统（调制/放大、解调）；数字系统（信源编码、加密、信道编码、调制 → 逆过程）</li>
+            <li><b>1.3 通信方式与分类</b>：按方向（单工/半双工/全双工）；按排列（并行/串行）；按同步（同步/异步）；还有按信道、复用等分类维度</li>
+            <li><b>1.4 信息及其度量</b>
+              <ul>
+                <li>自信息量：I = −log<sub>2</sub>P(x)，单位 bit（a=2）/ nat（a=e）/ Hartley（a=10）</li>
+                <li>平均信息量（熵）：H(X) = −∑P(x<sub>i</sub>)log<sub>2</sub>P(x<sub>i</sub>)，等概率最大 = log<sub>2</sub>M</li>
+                <li>连续信源：概率密度函数求微分熵（了解）</li>
+              </ul>
+            </li>
+            <li><b>1.5 性能指标</b>
+              <ul>
+                <li>有效性：模拟→带宽 B；数字→频带利用率 η = R<sub>B</sub>/B 或 R<sub>b</sub>/B</li>
+                <li>可靠性：模拟→信噪比 SNR；数字→误码率 P<sub>e</sub>、误信率 P<sub>b</sub>（正常通信 P<sub>e</sub>&lt;10<sup>−4</sup>）</li>
+                <li>速率：R<sub>B</sub>=1/T<sub>s</sub>（Baud）；R<sub>b</sub>=R<sub>B</sub>·H，等概率 R<sub>b</sub>=R<sub>B</sub>·log<sub>2</sub>M</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="info">
+      <span class="bt">🔗 与后续章节的衔接（提前了解）</span>
+      信息度量（熵）是香农信息论的核心，后面会用到：信道容量与香农公式 C = B·log<sub>2</sub>(1+S/N)（带宽 B、信噪比 S/N 决定最大信息速率）；信源编码定理、信道编码定理都在“熵/互信息”基础上展开；2PSK/4PSK 等数字调制将在第七章详细讲解。
+    </div>
+  </div>
+
+  <!-- ======================== 7 ======================== -->
+  <div class="card" id="s7">
+    <h2><span class="no">7</span>参考资料与致谢</h2>
+    <ul>
+      <li>课堂录音转文本：《标准录音 12》— 转文本结果.docx；《指定方向录音 2》— 转文本结果(1).docx；</li>
+      <li>樊昌信、曹丽娜.《通信原理》（第 7 版），国防工业出版社，第 1 章；</li>
+      <li>主要例题参照书籍例题 1-1、1-4 及课后习题重算验证。</li>
+    </ul>
+    <p style="color:var(--muted);font-size:.9rem">本笔记为学习整理用途，公式与结论经核对；如发现笔误欢迎提出，以教材为准。</p>
+  </div>
+
+  <div class="foot">
+    📡 通信原理 课堂笔记 · 生成于 2026-09-17 · 手机端可直接阅读
+  </div>
+</div>
+<a class="totop" href="#top">↑ 顶部</a>
+</body>
+</html>
+
